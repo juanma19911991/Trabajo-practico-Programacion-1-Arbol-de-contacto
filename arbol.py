@@ -1,6 +1,9 @@
+# Trabajo práctico - Árbol de contactos en Python
+#Github:https://github.com/dantekein9015/Arbol-de-contacto
+
 import time
 
-# Clase para representar un contacto
+# Clase que representa un contacto
 class Contacto:
     def __init__(self, nombre, telefono):
         self.nombre = nombre
@@ -16,14 +19,14 @@ class Nodo:
         self.izquierda = None
         self.derecha = None
 
-# Árbol binario de búsqueda para contactos
+# Árbol binario de contactos
 class ArbolContactos:
     def __init__(self):
         self.raiz = None
 
     def insertar(self, contacto):
         def _insertar(nodo, contacto):
-            if not nodo:
+            if nodo is None:
                 return Nodo(contacto)
             if contacto.nombre < nodo.contacto.nombre:
                 nodo.izquierda = _insertar(nodo.izquierda, contacto)
@@ -35,7 +38,7 @@ class ArbolContactos:
 
     def buscar(self, nombre):
         def _buscar(nodo, nombre):
-            if not nodo:
+            if nodo is None:
                 return None
             if nombre == nodo.contacto.nombre:
                 return nodo.contacto
@@ -58,33 +61,60 @@ class ArbolContactos:
         _inorden(self.raiz)
         return resultados
 
-# --- Uso del árbol ---
+# --- PRUEBA / MENÚ INTERACTIVO ---
 
-# Lista de nombres para insertar
-nombres = ["Carlos", "Ana", "Diego", "Beatriz", "Eduardo", "Fabián", "Gabriela", "Héctor"]
+def main():
+    arbol = ArbolContactos()
+    nombres = ["Carlos", "Ana", "Diego", "Romina", "Enrique", "Juan", "Gabriela", "Hector"]
 
-# Crear árbol
-arbol = ArbolContactos()
+    print("Insertando contactos...")
 
-# Medir tiempo de inserción
-inicio_insercion = time.time()
-for nombre in nombres:
-    telefono = f"+54 9 11 0000-{nombres.index(nombre):04}"
-    arbol.insertar(Contacto(nombre, telefono))
-fin_insercion = time.time()
+    inicio_insercion = time.time()
+    for i, nombre in enumerate(nombres):
+        telefono = f"+54 9 11 0000-{i:04}"
+        arbol.insertar(Contacto(nombre, telefono))
+    fin_insercion = time.time()
 
-# Medir tiempo de búsqueda
-inicio_busqueda = time.time()
-resultado = arbol.buscar("Gabriela")
-fin_busqueda = time.time()
+    print("Contactos insertados correctamente.")
+    print(f"Tiempo total de inserción: {fin_insercion - inicio_insercion:.6f} segundos\n")
 
-# Mostrar resultados
-print("Contactos ordenados (inorden):")
-for contacto in arbol.inorden():
-    print(contacto)
+    while True:
+        print("\n--- MENÚ ---")
+        print("1. Buscar contacto")
+        print("2. Ver todos los contactos (orden alfabético)")
+        print("3. Agregar nuevo contacto")
+        print("4. Salir")
 
-print("\nResultado de búsqueda:")
-print(resultado)
+        opcion = input("Elegí una opción: ")
 
-print(f"\nTiempo total de inserción: {fin_insercion - inicio_insercion:.6f} segundos")
-print(f"Tiempo de búsqueda: {fin_busqueda - inicio_busqueda:.6f} segundos")
+        if opcion == "1":
+            nombre = input("Nombre a buscar: ")
+            inicio_busqueda = time.time()
+            contacto = arbol.buscar(nombre)
+            fin_busqueda = time.time()
+            if contacto:
+                print(f"📇 Contacto encontrado: {contacto}")
+            else:
+                print("❌ Contacto no encontrado.")
+            print(f"Tiempo de búsqueda: {fin_busqueda - inicio_busqueda:.6f} segundos")
+
+        elif opcion == "2":
+            print("\n📚 Contactos ordenados alfabéticamente:")
+            for c in arbol.inorden():
+                print(c)
+
+        elif opcion == "3":
+            nombre = input("Nombre del nuevo contacto: ")
+            telefono = input("Teléfono: ")
+            arbol.insertar(Contacto(nombre, telefono))
+            print("✅ Contacto agregado.")
+
+        elif opcion == "4":
+            print("¡Hasta la próxima!")
+            break
+        else:
+            print("❗ Opción no válida.")
+
+if __name__ == "__main__":
+    main()
+
